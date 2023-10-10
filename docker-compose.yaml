@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - './app:/app'
+      - './temp:/temp'
+      - '~/.kube/config:/root/.kube/config'
+    ports:
+      - 8000:8000
+    command:
+      - /app/api.py
+  jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - './app:/app'
+      - './temp:/temp'
+      - '~/.kube/config:/root/.kube/config'
+    command:
+      - /app/jobs.py
