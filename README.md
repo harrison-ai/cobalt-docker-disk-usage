@@ -11,7 +11,7 @@ The image is based on the `python:3.11-slim-bookworm` image and incorperates the
 
 ## How to get started
 
-1. Install python 3.10 or greater
+1. Install python 3.11
 2. Create a virtual environment
 `python3 -m venv .venv`
 3. Install requirements
