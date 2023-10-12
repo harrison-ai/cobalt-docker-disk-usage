@@ -6,6 +6,8 @@ import base64
 import subprocess
 from config import Config
 
+DEFAULT_DATA = {"exports": {}}
+
 logging.basicConfig(
     format="%(asctime)s %(funcName)s %(levelname)s: %(message)s", level=logging.INFO
 )
@@ -54,7 +56,7 @@ def disk_usage():
     Loop through folders get their disk usage grouped by export and folder as a dict
     """
     c = Config()
-    usage = {"exports": {}}
+    usage = DEFAULT_DATA
     for dir in traverse_level(c.get("ROOT_FOLDER"), c.get("FOLDER_REPORTING_DEPTH")):
         parent = dir[len(c.get("ROOT_FOLDER")) + len(os.path.sep) :].split(os.path.sep)[
             c.get("EXPORT_REPORTING_DEPTH")
@@ -85,7 +87,7 @@ def get_kube_namespace():
     return "default"
 
 
-def read_disk_usage_from_kube_secret():
+def read_usage_from_kube_secret():
     """
     Read the disk usage from the configured kube secret
     """
@@ -119,19 +121,31 @@ def write_disk_usage_to_kube_secret(usage):
     )
 
 
+def get_usage_from_usage_file():
+    """
+    Read disk usage from local file
+    """
+    c = Config()
+    usage_file = c.get("USAGE_FILE")
+    if usage_file and os.path.isfile(usage_file):
+        with open(usage_file) as uf:
+            return json.load(uf)
+    return DEFAULT_DATA
+
+
 def read_usage():
     """
     Read disk usage from local file or kube state
     """
-    data = None
     c = Config()
+    # Always use usage file if we're working in local state.
     if c.get("USE_LOCAL_STATE"):
-        with open(c.get("USAGE_FILE")) as json_file:
-            return json.load(json_file)
+        return get_usage_from_usage_file()
+    # Use kube state if set.
     if c.get("USE_KUBE_STATE"):
+        # Bypass if usage file is also set. The writing process will handle this.
         if c.get("USAGE_FILE"):
-            with open(c.get("USAGE_FILE")) as json_file:
-                return json.load(json_file)
+            return get_usage_from_usage_file()
         if (
             c.get("LAST_READ_TIME")
             + datetime.timedelta(seconds=c.get("CACHED_READ_THRESHOLD_SECONDS"))
@@ -139,11 +153,11 @@ def read_usage():
         ):
             logging.info("Using cached read")
             return c.get("CACHED_USAGE")
-        usage = read_disk_usage_from_kube_secret()
+        usage = read_usage_from_kube_secret()
         c.set("LAST_READ_TIME", datetime.datetime.now())
         c.set("CACHED_USAGE", usage)
         return usage
-    return data
+    return DEFAULT_DATA
 
 
 def write_disk_usage():
