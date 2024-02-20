@@ -6,12 +6,13 @@ import base64
 import subprocess
 from config import Config
 
-DEFAULT_DATA = {"exports": {}}
-
 logging.basicConfig(
     format="%(asctime)s %(funcName)s %(levelname)s: %(message)s", level=logging.INFO
 )
 
+
+def _default_data():
+    return {"exports": {}}
 
 def create_fake_data():
     """
@@ -56,7 +57,7 @@ def disk_usage():
     Loop through folders get their disk usage grouped by export and folder as a dict
     """
     c = Config()
-    usage = DEFAULT_DATA
+    usage = _default_data()
     for dir in traverse_level(c.get("ROOT_FOLDER"), c.get("FOLDER_REPORTING_DEPTH")):
         parent = dir[len(c.get("ROOT_FOLDER")) + len(os.path.sep) :].split(os.path.sep)[
             c.get("EXPORT_REPORTING_DEPTH")
@@ -130,7 +131,7 @@ def get_usage_from_usage_file():
     if usage_file and os.path.isfile(usage_file):
         with open(usage_file) as uf:
             return json.load(uf)
-    return DEFAULT_DATA
+    return _default_data()
 
 
 def read_usage():
@@ -157,7 +158,7 @@ def read_usage():
         c.set("LAST_READ_TIME", datetime.datetime.now())
         c.set("CACHED_USAGE", usage)
         return usage
-    return DEFAULT_DATA
+    return _default_data()
 
 
 def write_disk_usage():
