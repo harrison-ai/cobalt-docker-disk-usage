@@ -15,13 +15,13 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Build the image
         run: make build
 
       - name: Log in to ghcr
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         if: github.event_name == 'release'
         with:
           registry: ghcr.io

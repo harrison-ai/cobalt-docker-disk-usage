@@ -5,13 +5,13 @@ a Prometheus compatible metrics interface
 
 ## What's inside ?
 
-The image is based on the `python:3.11-slim-bookworm` image and incorperates these major components:
+The image is based on the `python:3.13-slim-bookworm` image and incorperates these major components:
 
 * [parallel-disk-usage](https://github.com/KSXGitHub/parallel-disk-usage/)
 
 ## How to get started
 
-1. Install python 3.11
+1. Install python 3.13
 2. Create a virtual environment
 `python3 -m venv .venv`
 3. Install requirements
