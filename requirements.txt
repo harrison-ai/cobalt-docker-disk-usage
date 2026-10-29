@@ -65,6 +65,8 @@ python-dateutil==3.0.0
     # via kubernetes
 python-dotenv==1.2.4
     # via cobalt-disk-usage
+pytz==2026.5
+    # via cobalt-disk-usage
 pyyaml==6.0.3
     # via kubernetes
 requests==2.34.2

@@ -4,6 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file: .env
+    environment:
+      PYTHONUNBUFFERED: 1
+    platform: linux/amd64
     volumes:
       - './app:/app'
       - './temp:/temp'
@@ -17,6 +20,9 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file: .env
+    environment:
+      PYTHONUNBUFFERED: 1
+    platform: linux/amd64
     volumes:
       - './app:/app'
       - './temp:/temp'
