@@ -30,7 +30,7 @@ def create_fake_data():
                 f"user{str(user)}",
                 "folder",
             )
-            os.makedirs(dirs)
+            os.makedirs(dirs, exist_ok=True)
             with open(os.path.join(dirs, "file"), "wb") as f:
                 for _ in range(random.randint(100000, 300000)):
                     f.write(b"\0")
